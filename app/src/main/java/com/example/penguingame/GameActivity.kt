@@ -5,12 +5,17 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.game.*
 import android.animation.ValueAnimator
+import android.content.Context
 import android.view.animation.LinearInterpolator
 import android.content.Intent
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
+import android.util.Log.d
 import androidx.core.view.isVisible
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 
 class GameActivity : AppCompatActivity()  {
@@ -18,45 +23,43 @@ class GameActivity : AppCompatActivity()  {
     var currentScore = -1
     var screenHeight = 0f
     var screenWidth = 0f
+    var gameOver = false
+    lateinit var mAdView : AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game)
 
+        MobileAds.initialize(this) {}
+        mAdView = findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+
         screenHeight = obtainScreenHeight()
         screenWidth = obtainScreenWidth()
+        gameOver = false
+
+        val animalSelection = applicationContext.getSharedPreferences("select_animal", Context.MODE_PRIVATE)
+        val fromAnimalsActivity = animalSelection.getInt("select_animal", 0)
+
+        if(fromAnimalsActivity == 1) {
+            selectedAnimal.setImageResource(R.drawable.seal)
+        }
+        else {
+            selectedAnimal.setImageResource(R.drawable.penguin)
+        }
 
         screenClick.setOnClickListener {
-            checkBounds()
-            animalAteFish()
-            checkAnimalHit()
             if(currentScore == -1) {
-                startBackground()
+                isGameOver()
+                eatFood()
                 deployFloorObstacles()
                 deployFish()
                 sink()
                 currentScore++
             }
-            updateScore()
             moveAnimalUp()
         }
-
-
-    }
-
-    fun startBackground () {
-//        val animator = ValueAnimator.ofFloat(0.0f, -1.0f)
-//        animator.repeatCount = ValueAnimator.INFINITE
-//        animator.interpolator = LinearInterpolator()
-//        animator.duration = 1000L
-//        animator.addUpdateListener { animation ->
-//            val progress = animation.animatedValue as Float
-//            val width = background_one.width.toFloat()
-//            val translationX = width * progress
-//            background_one.translationX = translationX
-//            background_two.translationX = translationX + width
-//        }
-//        animator.start()
     }
 
     fun fish () {
@@ -101,7 +104,7 @@ class GameActivity : AppCompatActivity()  {
     }
 
 
-    fun moveAnimalUp () {
+    private fun moveAnimalUp () {
         val swim = ValueAnimator.ofFloat(0.0f, 1.0f)
         swim.interpolator = LinearInterpolator()
         swim.duration = 500L
@@ -111,7 +114,7 @@ class GameActivity : AppCompatActivity()  {
         swim.start()
     }
 
-    fun sink () {
+    private fun sink () {
         val sink = ValueAnimator.ofFloat(0.0f, 1.0f)
         sink.repeatCount = ValueAnimator.INFINITE
         sink.interpolator = LinearInterpolator()
@@ -155,58 +158,88 @@ class GameActivity : AppCompatActivity()  {
         }
     }
 
-    fun deployFish () {
+    private fun deployFish () {
         val handler = Handler()
-        val delay = 8000L //milliseconds
+        val delay = 6000L //milliseconds
 
         handler.postDelayed(object : Runnable {
             override fun run() {
-                fish()
-                handler.postDelayed(this, delay)
+                if(!gameOver) {
+                    fish()
+                    handler.postDelayed(this, delay)
+                }
             }
         }, 2000)
     }
 
-    fun deployFloorObstacles () {
+    private fun deployFloorObstacles () {
         val handler = Handler()
         val handler2 = Handler()
         val delay = 5000L //milliseconds
 
         handler.postDelayed(object : Runnable {
             override fun run() {
-                floorObstacle()
-                handler.postDelayed(this, delay)
+                if(!gameOver) {
+                    floorObstacle()
+                    handler.postDelayed(this, delay)
+                }
             }
         }, 1000)
 
         handler2.postDelayed(object : Runnable {
             override fun run() {
-                floorObstacle2()
-                handler.postDelayed(this, delay)
+                if(!gameOver) {
+                    floorObstacle2()
+                    handler.postDelayed(this, delay)
+                }
             }
         }, 3000)
     }
 
-    fun obtainScreenHeight (): Float {
+    private fun isGameOver () {
+        val handler = Handler()
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if(!gameOver) {
+                    checkBounds()
+                    checkAnimalHit()
+                    handler.postDelayed(this, 100)
+                }
+            }
+        }, 1000)
+    }
+
+    private fun eatFood () {
+        val handler = Handler()
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if(!gameOver) {
+                    animalAteFish()
+                    updateScore()
+                    handler.postDelayed(this, 500)
+                }
+            }
+        }, 1000)
+    }
+
+    private fun obtainScreenHeight (): Float {
         val display = windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
-
         return size.y.toFloat()
     }
 
-    fun obtainScreenWidth (): Float {
+    private fun obtainScreenWidth (): Float {
         val display = windowManager.defaultDisplay
         val size = Point()
         display.getSize(size)
-
         return size.x.toFloat()
     }
 
-    fun gameOver() {
+    private fun gameOver() {
+        gameOver = true
         val intent = Intent(this,GameOverActivity::class.java)
         intent.putExtra("current_score", currentScore)
         startActivity(intent)
     }
-
 }

@@ -1,26 +1,41 @@
 package com.example.penguingame
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log.d
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.game_over.*
-import android.R.id.edit
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
-
-
 
 class GameOverActivity : AppCompatActivity() {
+
+    private lateinit var mInterstitialAd: InterstitialAd
+    var quitButtonClicked = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_over)
 
-        val highscoreSaver = this.getSharedPreferences("highscore", Context.MODE_PRIVATE)
-        val updateHighScore = highscoreSaver.edit()
-        val currentHighScore = highscoreSaver.getInt("highscore", 0)
+        MobileAds.initialize(this) {}
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+
+        mInterstitialAd.adListener = object: AdListener() {
+            override fun onAdClosed() {
+                if(quitButtonClicked)
+                    goHome()
+                else
+                    restartGame()
+            }
+        }
+
+        val highScoreSaver = applicationContext.getSharedPreferences("highscore", Context.MODE_PRIVATE)
+        val updateHighScore = highScoreSaver.edit()
+        val currentHighScore = highScoreSaver.getInt("highscore", 0)
 
 
         val bundle = intent.extras
@@ -32,16 +47,33 @@ class GameOverActivity : AppCompatActivity() {
             updateHighScore.commit()
         }
 
-        highScore.text = highscoreSaver.getInt("highscore", 0).toString()
+        highScore.text = highScoreSaver.getInt("highscore", 0).toString()
         endScore.text = currentScore.toString()
 
 
         quitButton.setOnClickListener {
-            startActivity(Intent(this, MainActivity :: class.java))
+            quitButtonClicked = true
+            if (mInterstitialAd.isLoaded)
+                mInterstitialAd.show()
+            else
+                goHome()
         }
 
         retryButton.setOnClickListener {
-            startActivity(Intent(this, GameActivity :: class.java))
+            quitButtonClicked = false
+            if (mInterstitialAd.isLoaded)
+                mInterstitialAd.show()
+            else
+                restartGame()
         }
     }
+
+    fun goHome() {
+        startActivity(Intent(this, MainActivity :: class.java))
+    }
+
+    fun restartGame() {
+        startActivity(Intent(this, GameActivity :: class.java))
+    }
+
 }

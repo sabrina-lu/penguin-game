@@ -12,8 +12,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         startButton.setOnClickListener {
-            startActivity(Intent(this, GameActivity :: class.java))
+            startActivity(Intent(this, GameActivity::class.java))
         }
 
+        animalsButton.setOnClickListener {
+            startActivity(Intent(this, AnimalsActivity::class.java))
+        }
     }
 }
