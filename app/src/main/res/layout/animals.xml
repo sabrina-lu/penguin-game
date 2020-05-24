@@ -24,16 +24,43 @@
         android:layout_marginEnd="28dp"
         android:layout_marginRight="28dp"
         android:background="@drawable/question_mark"
+        android:shadowColor="@android:color/holo_blue_bright"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.547"
+        app:layout_constraintHorizontal_bias="0.63"
         app:layout_constraintStart_toEndOf="@+id/penguin_animal"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/third_animal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
+        android:background="@drawable/question_mark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/penguin_animal"
+        app:layout_constraintVertical_bias="0.154" />
+
+    <Button
+        android:id="@+id/fourth_animal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/question_mark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.351"
+        app:layout_constraintStart_toEndOf="@+id/third_animal"
+        app:layout_constraintTop_toBottomOf="@+id/seal_animal"
+        app:layout_constraintVertical_bias="0.099" />
 
     <ImageView
         android:id="@+id/checkmark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:color/transparent"
+        android:elevation="10dp"
         tools:layout_editor_absoluteX="60dp"
         tools:layout_editor_absoluteY="120dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

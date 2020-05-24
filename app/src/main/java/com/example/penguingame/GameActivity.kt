@@ -11,7 +11,7 @@ import android.content.Intent
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
-import android.util.Log.d
+import android.view.View
 import androidx.core.view.isVisible
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -42,14 +42,17 @@ class GameActivity : AppCompatActivity()  {
         val animalSelection = applicationContext.getSharedPreferences("select_animal", Context.MODE_PRIVATE)
         val fromAnimalsActivity = animalSelection.getInt("select_animal", 0)
 
-        if(fromAnimalsActivity == 1) {
+        if(fromAnimalsActivity == 1)
             selectedAnimal.setImageResource(R.drawable.seal)
-        }
-        else {
+        else if(fromAnimalsActivity == 2)
+            selectedAnimal.setImageResource(R.drawable.fish)
+        else if(fromAnimalsActivity == 3)
+            selectedAnimal.setImageResource(R.drawable.coral_small)
+        else
             selectedAnimal.setImageResource(R.drawable.penguin)
-        }
 
         screenClick.setOnClickListener {
+            start_text.visibility = View.INVISIBLE
             if(currentScore == -1) {
                 isGameOver()
                 eatFood()
@@ -73,13 +76,13 @@ class GameActivity : AppCompatActivity()  {
     }
 
     fun floorObstacle () {
-        val obstacle = (Math.random() * 2).toInt()
-        if(obstacle == 0) {
-            floor_obstacle.setImageResource(R.drawable.coral)
-        }
-        else {
+        val obstacle = (Math.random() * 3).toInt()
+        if(obstacle == 0)
+            floor_obstacle.setImageResource(R.drawable.coral_small)
+        else if(obstacle == 1)
+            floor_obstacle.setImageResource(R.drawable.coral_medium)
+        else
             floor_obstacle.setImageResource(R.drawable.seaweed)
-        }
         floor_obstacle.x = screenWidth
         ObjectAnimator.ofFloat(findViewById(R.id.floor_obstacle), "translationX", -screenWidth).apply {
             duration = 4000
@@ -89,13 +92,13 @@ class GameActivity : AppCompatActivity()  {
     }
 
     fun floorObstacle2 () {
-        val obstacle = (Math.random() * 2).toInt()
-        if(obstacle == 0) {
-            floor_obstacle2.setImageResource(R.drawable.coral)
-        }
-        else {
+        val obstacle = (Math.random() * 3).toInt()
+        if(obstacle == 0)
+            floor_obstacle2.setImageResource(R.drawable.coral_small)
+        else if(obstacle == 1)
+            floor_obstacle2.setImageResource(R.drawable.coral_medium)
+        else
             floor_obstacle2.setImageResource(R.drawable.seaweed)
-        }
         floor_obstacle2.x = screenWidth
         ObjectAnimator.ofFloat(findViewById(R.id.floor_obstacle2), "translationX", -screenWidth).apply {
             duration = 4000

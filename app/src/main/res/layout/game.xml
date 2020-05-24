@@ -9,8 +9,12 @@
         android:id="@+id/background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/background"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/background" />
 
     <Button
         android:id="@+id/screenClick"
@@ -19,8 +23,10 @@
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/fish"
@@ -62,6 +68,7 @@
         android:id="@+id/floor_obstacle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@android:color/transparent" />
 
@@ -82,6 +89,17 @@
         app:adUnitId="ca-app-pub-3940256099942544/6300978111"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></com.google.android.gms.ads.AdView>
+
+    <ImageView
+        android:id="@+id/start_text"
+        android:layout_width="187dp"
+        android:layout_height="145dp"
+        app:layout_constraintBottom_toBottomOf="@+id/screenClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.313"
+        app:srcCompat="@drawable/tap_to_begin_text" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
